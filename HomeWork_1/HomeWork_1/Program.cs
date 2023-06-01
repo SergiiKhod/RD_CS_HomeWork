@@ -1,9 +1,13 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-Console.WriteLine("Hello, World!");
+string nameFirst = "Sergii";
 
-Console.WriteLine("Hello, World!");
+string nameLast = "Khodatskyi";
 
-Console.WriteLine("Hello, World!");
+
+
+Console.WriteLine($"Hello, {nameFirst} {nameLast}!");
+
+Console.ReadLine();
 
 
