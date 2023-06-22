@@ -1,6 +1,4 @@
-﻿using System.Xml.Serialization;
-
-namespace HomeWork_5
+﻿namespace HomeWork_5
 {
     internal class Program
     {
