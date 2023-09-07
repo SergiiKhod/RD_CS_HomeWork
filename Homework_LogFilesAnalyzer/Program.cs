@@ -1,5 +1,6 @@
 ﻿namespace Homework_LogFilesAnalyzer
 {
+
     internal class Program
     {
         private static void Main()

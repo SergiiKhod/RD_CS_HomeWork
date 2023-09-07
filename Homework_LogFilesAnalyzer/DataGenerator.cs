@@ -5,6 +5,7 @@ namespace Homework_LogFilesAnalyzer
 
     public static class DataGenerator
     {
+
         private sealed class LogLineFaker : Faker<LogLine>
         {
             private readonly Random _random = new();

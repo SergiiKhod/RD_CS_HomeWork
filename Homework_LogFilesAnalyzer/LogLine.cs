@@ -12,6 +12,8 @@ namespace Homework_LogFilesAnalyzer
         WARNING,
         ERROR
     }
+
+
     public class LogLine
     {
         public const string SeparatorInfo = "\t";

@@ -1,6 +1,7 @@
 ﻿namespace Homework_LogFilesAnalyzer
 { public class LogFileAnalyzer
     {
+
         public string LogFilePath { get; }
         public Dictionary<string, int> LogLevels { get; }
 

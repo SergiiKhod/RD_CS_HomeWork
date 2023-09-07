@@ -29,6 +29,7 @@
         }
     }
 
+
     public class LogLineAnalyzerException : IOException
     {
         public int LineNumber { get; }
