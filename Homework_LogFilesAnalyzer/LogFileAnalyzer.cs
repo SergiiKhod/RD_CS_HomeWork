@@ -1,11 +1,12 @@
 ﻿namespace Homework_LogFilesAnalyzer
-{ public class LogFileAnalyzer
+{
+    public class LogFileAnalyzer
     {
 
         public string LogFilePath { get; }
         public Dictionary<string, int> LogLevels { get; }
 
-        public Dictionary<int,int> HourFrequencies { get; }
+        public Dictionary<int, int> HourFrequencies { get; }
         public DateTime PeriodStart { get; private set; }
         public DateTime PeriodEnd { get; private set; }
 
@@ -18,11 +19,11 @@
         {
             LogFilePath = path;
             LogLevels = new Dictionary<string, int>();
-            HourFrequencies= new Dictionary<int,int>();
+            HourFrequencies = new Dictionary<int, int>();
             FileSize = string.Empty;
-            PeriodEnd= DateTime.MinValue;
-            PeriodStart =   DateTime.MinValue;
-            MostHourFrequent= DateTime.MinValue;
+            PeriodEnd = DateTime.MinValue;
+            PeriodStart = DateTime.MinValue;
+            MostHourFrequent = DateTime.MinValue;
 
         }
 
@@ -41,10 +42,11 @@
                     }
                     catch (Exception e)
                     {
-                        throw new LogLineAnalyzerException(lineNumber, $"Error processing line {lineNumber}: {e.Message}");
+                        throw new LogLineAnalyzerException(lineNumber,
+                            $"Error processing line {lineNumber}: {e.Message}");
                     }
                 }
-                
+
                 PeriodStart = GetMinDateTime();
                 PeriodEnd = GetMaxDateTime();
                 FileSize = GetFileSize();
@@ -52,7 +54,7 @@
             }
             catch (Exception e)
             {
-             throw new LogFileAnalyzerException(e);
+                throw new LogFileAnalyzerException(e);
             }
 
         }
@@ -85,7 +87,7 @@
 
         private DateTime GetMinDateTime()
         {
-           return LogLine.Parse(File.ReadLines(LogFilePath).First()).EventDateTime;
+            return LogLine.Parse(File.ReadLines(LogFilePath).First()).EventDateTime;
         }
 
         private DateTime GetMaxDateTime()
@@ -113,7 +115,7 @@
         public DateTime GetMostFrequentEventHour()
         {
             var mostFrequentHour = HourFrequencies.MaxBy(pair => pair.Value).Key;
-            return new DateTime(1, 1, 1, mostFrequentHour, 0, 0); 
+            return new DateTime(1, 1, 1, mostFrequentHour, 0, 0);
         }
 
 
@@ -121,14 +123,40 @@
         {
             var report = $"Log File Analysis Report for {Path.GetFileName(LogFilePath)}";
             report += $"{Environment.NewLine}Size of file: {FileSize}";
-            report += $"{Environment.NewLine}Total lines: {LogLevels.Sum(row=>row.Value):##,###}";
+            report += $"{Environment.NewLine}Total lines: {LogLevels.Sum(row => row.Value):##,###}";
             report += $"{Environment.NewLine}Period: {PeriodStart:F} - {PeriodEnd:F}";
             report += $"{Environment.NewLine}";
-            report=LogLevels.Aggregate(report, (current, logLevel) => current + $"{Environment.NewLine}{logLevel.Key}: {logLevel.Value:##,### 'entries'}");
+            report = LogLevels.Aggregate(report,
+                (current, logLevel) =>
+                    current + $"{Environment.NewLine}{logLevel.Key}: {logLevel.Value:##,### 'entries'}");
             report += $"{Environment.NewLine}";
-            report += $"{Environment.NewLine}Most frequent event hour: {MostHourFrequent:t}-{MostHourFrequent.AddHours(1):t}";
+            report +=
+                $"{Environment.NewLine}Most frequent event hour: {MostHourFrequent:t}-{MostHourFrequent.AddHours(1):t}";
+            var fileReport = SaveReportToFile(report);
+            report += $"{Environment.NewLine}Report was saved to the file: {fileReport}";
+            report += $"{Environment.NewLine}";
             return report;
         }
-    }
 
+        private string GetReportFilename()
+        {
+            return Path.Combine(Path.GetDirectoryName(LogFilePath) ?? throw new InvalidOperationException(),
+                $"report_{Path.GetFileNameWithoutExtension(Path.GetTempFileName())}_{Path.GetFileName(LogFilePath)}");
+        }
+
+        private string SaveReportToFile(string report)
+        {
+            var filename = GetReportFilename();
+            try
+            {
+                using var writer = new StreamWriter(filename);
+                writer.WriteLine(report);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error writing report to file: {e.Message}");
+            }
+            return filename;
+        }
+    }
 }
